@@ -30,7 +30,28 @@ SECTIONS {
 	} > FLASH
 
 	.text (READONLY) : ALIGN(word_align) {
+		*(.text*)
 	} > FLASH
+
+	.rodata () : ALIGN(word_align) {
+		*(.rodata*)
+	} > FLASH
+
+	.data : ALIGN(word_align) {
+		__data_start__ = .;
+		*(.data*)
+		. = ALIGN(word_align);
+		__data_end__ = .;
+	} > SRAM AT> FLASH
+
+	__data_load__ = LOADADDR(.data);
+
+	.bss (NOLOAD) : ALIGN(word_align) {
+		__bss_start__ = .;
+		*(.bss*)
+		. = ALIGN(word_align);
+		__bss_end__ = .;
+	} > SRAM
 
 	/* TODO: enable this catch-all once everything's mapped */
 	/* .unmapped 0 : { *(*) } */
