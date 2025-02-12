@@ -33,7 +33,7 @@ SECTIONS {
 		*(.text*)
 	} > FLASH
 
-	.rodata () : ALIGN(word_align) {
+	.rodata (READONLY) : ALIGN(word_align) {
 		*(.rodata*)
 	} > FLASH
 
