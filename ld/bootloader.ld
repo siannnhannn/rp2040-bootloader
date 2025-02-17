@@ -84,6 +84,24 @@ SECTIONS {
 		LONG(ADDR(.stack1) + SIZEOF(.stack1))
 		__zero_end__ = .;
 	} > FLASH
+
+	.ARM.attributes 0 : { *(.ARM.attributes) }
+	.comment        0 : { *(.comment)        }
+	.debug_abbrev   0 : { *(.debug_abbrev)   }
+	.debug_aranges  0 : { *(.debug_aranges)  }
+	.debug_frame    0 : { *(.debug_frame)    }
+	.debug_info     0 : { *(.debug_info)     }
+	.debug_line     0 : { *(.debug_line)     }
+	.debug_line_str 0 : { *(.debug_line_str) }
+	.debug_loclists 0 : { *(.debug_loclists) }
+	.debug_rnglists 0 : { *(.debug_rnglists) }
+	.debug_str      0 : { *(.debug_str)      }
+	.shstrtab       0 : { *(.shstrtab)       }
+	.strtab         0 : { *(.strtab)         }
+	.symtab         0 : { *(.symtab)         }
+	*/
+
+	.unmapped 0 : { *(*) }
 }
 
 __msp0_init__  = ORIGIN(SRAM4) + LENGTH(SRAM4);
@@ -91,9 +109,7 @@ __msp0_limit__ = ORIGIN(SRAM4);
 __msp1_init__  = ORIGIN(SRAM5) + LENGTH(SRAM5);
 __msp1_limit__ = ORIGIN(SRAM5);
 
-/* TODO: make sure this assertion passes */
-/* ASSERT(SIZEOF(.unmapped) == 0, "SIZEOF(.unmapped) != 0") */
-
+ASSERT(SIZEOF(.unmapped) == 0, "SIZEOF(.unmapped) != 0")
 ASSERT(SIZEOF(.stage2) == stage2_size, "SIZEOF(.stage2) != stage2_size")
 ASSERT(LOADADDR(.stage2) == stage2_lma, "LOADADDR(.stage2) != stage2_lma")
 ASSERT(ALIGNOF(.rodata._vectors) == vector_align, "ALIGNOF(.rodata._vectors) == vector_align")
