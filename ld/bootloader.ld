@@ -53,6 +53,21 @@ SECTIONS {
 		__bss_end__ = .;
 	} > SRAM
 
+	.stack0 (NOLOAD) : ALIGN(word_align) {
+		__stack4_start__ = .;
+		. += LENGTH(SRAM4);
+		. = ALIGN(word_align);
+		__stack4_end__ = .;
+
+	} > SRAM4
+
+	.stack1 (NOLOAD) : ALIGN(word_align) {
+		__stack5_start__ = .;	
+		. += LENGTH(SRAM5);
+		. = ALIGN(word_align);
+		__stack5_end__ = .;
+	} > SRAM5
+
 	.copy : ALIGN(word_align) {
 		__copy_start__ = .;
 		LONG(ADDR(.data))
