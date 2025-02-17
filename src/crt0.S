@@ -30,34 +30,40 @@ _start:
 	ldr r1, [r1]
 	msr msp, r1
 
-//data
-	ldr r0, =__data_start__
-	ldr r1, =__data_end__
-	ldr r2, =__data_load__
+//copy table (data)
+	ldr r0, =__copy_start__
+	ldr r1, =__copy_end__
+
+.Lcopy_loop:
+	ldmia r0!, {r2-r4}
 
 .Lcopy:
-	ldr r3, [r2]
-	str r3, [r0]
-	adds r0, r0, #4
-	adds r2, r2, #4
-	cmp r0, r1
+	ldmia r3!, {r6}
+	stmia r2!, {r6}
+	cmp r2, r4
 	blt .Lcopy
+	cmp r0, r1
+	blt .Lcopy_loop
 
-//zero bss
-	movs r0, #0
-	ldr r1, =__bss_start__
-	ldr r2, =__bss_end__
+//zero table (bss and stack)
+	ldr r0, =__zero_start__
+	ldr r1, =__zero_end__
+	movs r2, #0
+
+.Lzero_loop:
+	ldmia r0!, {r3, r4}
 
 .Lzero:
-	str r0, [r1]
-	adds r1, r1, #4
-	cmp r1, r2
+	stmia r3!, {r2}
+	cmp r3, r4
 	blt .Lzero
+	cmp r0, r1
+	blt .Lzero_loop
 
 //enable interrupts
 	cpsie i
 
-//going to main
+//main
 	ldr r0, =main
 	blx r0
 

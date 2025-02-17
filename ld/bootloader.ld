@@ -53,8 +53,22 @@ SECTIONS {
 		__bss_end__ = .;
 	} > SRAM
 
-	/* TODO: enable this catch-all once everything's mapped */
-	/* .unmapped 0 : { *(*) } */
+	.copy : ALIGN(word_align) {
+		__copy_start__ = .;
+		LONG(ADDR(.data))
+		LONG(LOADADDR(.data))
+		LONG(ADDR(.data) + SIZEOF(.data))
+		__copy_end__ = .;
+	} > FLASH
+
+	.zero : ALIGN(word_align) {
+		__zero_start__ = .;
+		LONG(ADDR(.bss))
+		LONG(ADDR(.bss) + SIZEOF(.bss))
+		LONG(ADDR(.stack0))
+		LONG(ADDR(.stack1) + SIZEOF(.stack1))
+		__zero_end__ = .;
+	} > FLASH
 }
 
 __msp0_init__  = ORIGIN(SRAM4) + LENGTH(SRAM4);
