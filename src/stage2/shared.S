@@ -31,6 +31,8 @@ _start:
 	ldr r0, =FLASH_VECTOR_TABLE
 	ldr r1, =VTOR
 	str r0, [r1]
+	dsb
+	isb
 	ldr r0, [r0, #4]
 
 .Labort_stage2:
