@@ -30,7 +30,7 @@ _start:
 	ldr r1, [r1]
 	msr msp, r1
 
-//copy table (data)
+//copy table
 	ldr r0, =__copy_start__
 	ldr r1, =__copy_end__
 
@@ -45,7 +45,7 @@ _start:
 	cmp r0, r1
 	blt .Lcopy_loop
 
-//zero table (bss and stack)
+//zero table
 	ldr r0, =__zero_start__
 	ldr r1, =__zero_end__
 	movs r2, #0
