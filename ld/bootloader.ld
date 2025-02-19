@@ -38,34 +38,28 @@ SECTIONS {
 	} > FLASH
 
 	.data : ALIGN(word_align) {
-		__data_start__ = .;
 		*(.data*)
 		. = ALIGN(word_align);
-		__data_end__ = .;
 	} > SRAM AT> FLASH
 
-	__data_load__ = LOADADDR(.data);
-
 	.bss (NOLOAD) : ALIGN(word_align) {
-		__bss_start__ = .;
 		*(.bss*)
 		. = ALIGN(word_align);
-		__bss_end__ = .;
 	} > SRAM
 
 	.stack0 (NOLOAD) : ALIGN(word_align) {
-		__stack4_start__ = .;
+		__stack0_limit__ = .;
 		. += LENGTH(SRAM4);
 		. = ALIGN(word_align);
-		__stack4_end__ = .;
+		__stack0_init__ = .;
 
 	} > SRAM4
 
 	.stack1 (NOLOAD) : ALIGN(word_align) {
-		__stack5_start__ = .;	
+		__stack1_limit__ = .;	
 		. += LENGTH(SRAM5);
 		. = ALIGN(word_align);
-		__stack5_end__ = .;
+		__stack1_init__ = .;
 	} > SRAM5
 
 	.copy : ALIGN(word_align) {
@@ -81,6 +75,8 @@ SECTIONS {
 		LONG(ADDR(.bss))
 		LONG(ADDR(.bss) + SIZEOF(.bss))
 		LONG(ADDR(.stack0))
+		LONG(ADDR(.stack0) + SIZEOF(.stack0))
+		LONG(ADDR(.stack1))
 		LONG(ADDR(.stack1) + SIZEOF(.stack1))
 		__zero_end__ = .;
 	} > FLASH
@@ -99,15 +95,9 @@ SECTIONS {
 	.shstrtab       0 : { *(.shstrtab)       }
 	.strtab         0 : { *(.strtab)         }
 	.symtab         0 : { *(.symtab)         }
-	*/
 
 	.unmapped 0 : { *(*) }
 }
-
-__msp0_init__  = ORIGIN(SRAM4) + LENGTH(SRAM4);
-__msp0_limit__ = ORIGIN(SRAM4);
-__msp1_init__  = ORIGIN(SRAM5) + LENGTH(SRAM5);
-__msp1_limit__ = ORIGIN(SRAM5);
 
 ASSERT(SIZEOF(.unmapped) == 0, "SIZEOF(.unmapped) != 0")
 ASSERT(SIZEOF(.stage2) == stage2_size, "SIZEOF(.stage2) != stage2_size")

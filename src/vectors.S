@@ -14,7 +14,7 @@
 	.type   _vectors, %object
 	.global _vectors
 _vectors:
-	.word __msp0_init__
+	.word __stack0_init__
 	.word _start
 	.word handler_default
 	.word handler_default
