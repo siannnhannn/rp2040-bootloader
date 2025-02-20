@@ -63,6 +63,7 @@ common_flags = [
     "-Wall",
     "-Wextra",
     "-Wl,--library-path=ld",
+    "-Wl,--gc-sections",
     "-Wl,--no-warn-rwx-segments",
     "-Wl,--script=ld/bootloader.ld",
     "-Wpedantic",
