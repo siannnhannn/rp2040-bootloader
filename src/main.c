@@ -18,6 +18,9 @@ int main() {
 	if(!(check_app_version(app_header))) {
 		while(1);
 	}
+
+	app_header.app_entry();
+
 	return 0;
 }
 
