@@ -2,45 +2,45 @@
  * bootloader.ld -- bootloader link
  */
 
-
 MEMORY {
 	ROM   (RX)  : ORIGIN = 0x00000000, LENGTH = 16K
-	FLASH (RX)  : ORIGIN = 0x10000000, LENGTH = 2048K
+	BLFLASH (RX)  : ORIGIN = 0x10000000, LENGTH = 16K
+	APPFLASH (RX)  : ORIGIN = ORIGIN(BLFLASH) + LENGTH(BLFLASH), LENGTH = 2048K - LENGTH(BLFLASH)
 	SRAM  (RWX) : ORIGIN = 0x20000000, LENGTH = 256K
 	SRAM4 (RWX) : ORIGIN = 0x20040000, LENGTH = 4K
 	SRAM5 (RWX) : ORIGIN = 0x20041000, LENGTH = 4K
 }
 
 HIDDEN(stage2_size = 256);
-HIDDEN(stage2_lma  = ORIGIN(FLASH));
+HIDDEN(stage2_lma  = ORIGIN(BLFLASH));
 HIDDEN(vectors_lma = stage2_lma + stage2_size);
 
 HIDDEN(vector_align = 256);
 HIDDEN(word_align   = 4);
 
-ENTRY(_start)
+ ENTRY(_start)
 
 SECTIONS {
 	.stage2 (READONLY) : {
 		KEEP(*(.stage2))
-	} > FLASH
+	} > BLFLASH
 
 	.rodata._vectors (READONLY) : ALIGN(vector_align) {
 		KEEP(*(.rodata._vectors))
-	} > FLASH
+	} > BLFLASH
 
 	.text (READONLY) : ALIGN(word_align) {
 		*(.text*)
-	} > FLASH
+	} > BLFLASH
 
 	.rodata (READONLY) : ALIGN(word_align) {
 		*(.rodata*)
-	} > FLASH
+	} > BLFLASH
 
 	.data : ALIGN(word_align) {
 		*(.data*)
 		. = ALIGN(word_align);
-	} > SRAM AT> FLASH
+	} > SRAM AT> BLFLASH
 
 	.bss (NOLOAD) : ALIGN(word_align) {
 		*(.bss*)
@@ -68,7 +68,7 @@ SECTIONS {
 		LONG(LOADADDR(.data))
 		LONG(ADDR(.data) + SIZEOF(.data))
 		__copy_end__ = .;
-	} > FLASH
+	} > BLFLASH
 
 	.zero : ALIGN(word_align) {
 		__zero_start__ = .;
@@ -79,7 +79,6 @@ SECTIONS {
 		LONG(ADDR(.stack1))
 		LONG(ADDR(.stack1) + SIZEOF(.stack1))
 		__zero_end__ = .;
-	} > FLASH
 
 	.ARM.attributes 0 : { *(.ARM.attributes) }
 	.comment        0 : { *(.comment)        }
