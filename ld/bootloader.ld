@@ -79,6 +79,13 @@ SECTIONS {
 		LONG(ADDR(.stack1))
 		LONG(ADDR(.stack1) + SIZEOF(.stack1))
 		__zero_end__ = .;
+	} > BLFLASH
+
+	.app : ALIGN(word_align) {
+		app_header = .;
+		KEEP(*(.app))
+		. = ALIGN(word_align);
+	} > APPFLASH
 
 	.ARM.attributes 0 : { *(.ARM.attributes) }
 	.comment        0 : { *(.comment)        }
@@ -98,7 +105,9 @@ SECTIONS {
 	.unmapped 0 : { *(*) }
 }
 
+
 ASSERT(SIZEOF(.unmapped) == 0, "SIZEOF(.unmapped) != 0")
+ASSERT(SIZEOF(.app) <= LENGTH(APPFLASH), "SIZEOF(.app) > LENGTH(APPFLASH)")
 ASSERT(SIZEOF(.stage2) == stage2_size, "SIZEOF(.stage2) != stage2_size")
 ASSERT(LOADADDR(.stage2) == stage2_lma, "LOADADDR(.stage2) != stage2_lma")
 ASSERT(ALIGNOF(.rodata._vectors) == vector_align, "ALIGNOF(.rodata._vectors) == vector_align")
