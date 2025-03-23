@@ -5,12 +5,19 @@ bool check_app_version(const app_header_t header) {
 	if (header.magic != APP_HEADER_MAGIC) {
 		return false;
 	}
+	
 	if (header.version.major != APP_HEADER_VERSION_MAJOR) {
 		return false;
 	}
-	if (header.version.minor != APP_HEADER_VERSION_MINOR) {
+
+	if (header.version.minor < APP_HEADER_VERSION_MINOR) {
 		return false;
 	}
+	
+	if (header.version.patch < APP_HEADER_VERSION_PATCH) {
+		return false;
+	}
+
 	return true;
 }
 
