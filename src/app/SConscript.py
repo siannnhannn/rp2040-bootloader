@@ -1,4 +1,3 @@
-
 from SCons.Script import (
     Import,
     Return,
