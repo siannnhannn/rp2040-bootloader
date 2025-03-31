@@ -3,22 +3,23 @@
  */
 
 MEMORY {
-	ROM   (RX)  : ORIGIN = 0x00000000, LENGTH = 16K
-	BLFLASH (RX)  : ORIGIN = 0x10000000, LENGTH = 16K
-	APPFLASH (RX)  : ORIGIN = ORIGIN(BLFLASH) + LENGTH(BLFLASH), LENGTH = 2048K - LENGTH(BLFLASH)
-	SRAM  (RWX) : ORIGIN = 0x20000000, LENGTH = 256K
-	SRAM4 (RWX) : ORIGIN = 0x20040000, LENGTH = 4K
-	SRAM5 (RWX) : ORIGIN = 0x20041000, LENGTH = 4K
+	ROM   (RX)  	: ORIGIN = 0x00000000, LENGTH = 16K
+	BLFLASH (RX)  	: ORIGIN = 0x10000000, LENGTH = 16K
+	APPFLASH (RX)  	: ORIGIN = ORIGIN(BLFLASH) + LENGTH(BLFLASH), LENGTH = 2048K - LENGTH(BLFLASH)
+	SRAM  (RWX) 	: ORIGIN = 0x20000000, LENGTH = 256K
+	SRAM4 (RWX) 	: ORIGIN = 0x20040000, LENGTH = 4K
+	SRAM5 (RWX) 	: ORIGIN = 0x20041000, LENGTH = 4K
 }
 
+HIDDEN(app_header_size = 20);
 HIDDEN(vector_align = 256);
 HIDDEN(word_align = 4);
 
 ENTRY(_start)
 
 SECTIONS {
-	.app_header (READONLY) : ALIGN(word_align) {
-		KEEP(*(.app_header))
+	.rodata.app_header (READONLY) : ALIGN(word_align) {
+		KEEP(*(.rodata.app_header))
 	} > APPFLASH
 
 	.rodata._vectors (READONLY) : ALIGN(vector_align) {
@@ -93,7 +94,9 @@ SECTIONS {
 	.symtab         0 : { *(.symtab)         }
 
 	.unmapped 0 : { *(*) }
-	
 }
+
+ASSERT(SIZEOF(.rodata.app_header) == app_header_size, "SIZEOF(.rodata.app_header) != 20")
+ASSERT(LOADADDR(.rodata.app_header) == ORIGIN(APPFLASH), "LOADADDR(.rodata.app_header) != ORIGIN(APPFLASH)")
 ASSERT(SIZEOF(.unmapped) == 0, "SIZEOF(.unmapped) != 0")
 ASSERT(ALIGNOF(.rodata._vectors) == vector_align, "ALIGNOF(.rodata._vectors) == vector_align")

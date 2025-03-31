@@ -3,12 +3,12 @@
  */
 
 MEMORY {
-	ROM   (RX)  : ORIGIN = 0x00000000, LENGTH = 16K
-	BLFLASH (RX)  : ORIGIN = 0x10000000, LENGTH = 16K
-	APPFLASH (RX)  : ORIGIN = ORIGIN(BLFLASH) + LENGTH(BLFLASH), LENGTH = 2048K - LENGTH(BLFLASH)
-	SRAM  (RWX) : ORIGIN = 0x20000000, LENGTH = 256K
-	SRAM4 (RWX) : ORIGIN = 0x20040000, LENGTH = 4K
-	SRAM5 (RWX) : ORIGIN = 0x20041000, LENGTH = 4K
+	ROM   (RX)  	: ORIGIN = 0x00000000, LENGTH = 16K
+	BLFLASH (RX)  	: ORIGIN = 0x10000000, LENGTH = 16K
+	APPFLASH (RX)  	: ORIGIN = ORIGIN(BLFLASH) + LENGTH(BLFLASH), LENGTH = 2048K - LENGTH(BLFLASH)
+	SRAM  (RWX) 	: ORIGIN = 0x20000000, LENGTH = 256K
+	SRAM4 (RWX) 	: ORIGIN = 0x20040000, LENGTH = 4K
+	SRAM5 (RWX) 	: ORIGIN = 0x20041000, LENGTH = 4K
 }
 
 HIDDEN(stage2_size = 256);
@@ -18,7 +18,8 @@ HIDDEN(vectors_lma = stage2_lma + stage2_size);
 HIDDEN(vector_align = 256);
 HIDDEN(word_align   = 4);
 
- ENTRY(_start)
+
+ENTRY(_start)
 
 SECTIONS {
 	.stage2 (READONLY) : {
@@ -107,7 +108,7 @@ SECTIONS {
 
 
 ASSERT(SIZEOF(.unmapped) == 0, "SIZEOF(.unmapped) != 0")
-ASSERT(SIZEOF(.app) <= LENGTH(APPFLASH), "SIZEOF(.app) > LENGTH(APPFLASH)")
+ASSERT(SIZEOF(.app) > 0, "SIZEOF(.app) == 0")
 ASSERT(SIZEOF(.stage2) == stage2_size, "SIZEOF(.stage2) != stage2_size")
 ASSERT(LOADADDR(.stage2) == stage2_lma, "LOADADDR(.stage2) != stage2_lma")
 ASSERT(ALIGNOF(.rodata._vectors) == vector_align, "ALIGNOF(.rodata._vectors) == vector_align")

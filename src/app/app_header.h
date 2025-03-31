@@ -16,7 +16,6 @@ typedef struct app_header_version {
     uint32_t patch;
 } app_header_version_t;
 
-// aligned to four bytes
 static_assert(offsetof(app_header_version_t, major) == 0x00, "offsetof(app_header_version_t, major) != 0x00");
 static_assert(offsetof(app_header_version_t, minor) == 0x04, "offsetof(app_header_version_t, minor) != 0x04");
 static_assert(offsetof(app_header_version_t, patch) == 0x08, "offsetof(app_header_version_t, patch) != 0x08");
@@ -33,6 +32,5 @@ static_assert(offsetof(app_header_t, magic) == 0x00, "offsetof(app_header_t, mag
 static_assert(offsetof(app_header_t, version) == 0x04, "offsetof(app_header_t, version) != 0x04");
 static_assert(offsetof(app_header_t, app_entry) == 0x10, "offsetof(app_header_t, app_entry) != 0x10");
 
-extern const app_header_t app_header __attribute__((section(".app_header")));
-
+extern const app_header_t app_header; 
 #endif // APP_HEADER
