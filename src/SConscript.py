@@ -30,6 +30,7 @@ bootloader = env.Program(
     source=[
         "crt0.S",
         "vectors.S",
+        "boot.c",
         "main.c",
     ] + stage2 + app,
 )

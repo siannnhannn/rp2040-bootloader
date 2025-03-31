@@ -19,6 +19,7 @@ app = env.Program(
         source=[
             "vectors.S",
             "app_main.c",
+            "app_header.c",
             "crt0.S",
         ],
         LIBS = [],
@@ -31,6 +32,6 @@ app_bin = env.ObjCopy(
     OBJCOPYFLAGS="--output-target=binary",
 )
 
-app = env.Incbin("incbin_app.S", app_bin)
+app = env.Incbin("app.S", app_bin)
 
 Return("app")
