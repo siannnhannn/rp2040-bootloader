@@ -18,14 +18,21 @@ stage2 = SConscript(
     ],
 )
 
+app = SConscript(
+    "app/SConscript.py",
+    exports=[
+        "env",
+    ],
+)
+
 bootloader = env.Program(
     target="bootloader",
     source=[
         "crt0.S",
         "vectors.S",
+        "boot.c",
         "main.c",
-    ]
-    + stage2,
+    ] + stage2 + app,
 )
 
 Return("bootloader")

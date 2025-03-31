@@ -1,5 +1,5 @@
 /*
- * bootloader.ld -- bootloader link
+ * app.ld -- app link
  */
 
 MEMORY {
@@ -11,40 +11,36 @@ MEMORY {
 	SRAM5 (RWX) 	: ORIGIN = 0x20041000, LENGTH = 4K
 }
 
-HIDDEN(stage2_size = 256);
-HIDDEN(stage2_lma  = ORIGIN(BLFLASH));
-HIDDEN(vectors_lma = stage2_lma + stage2_size);
-
+HIDDEN(app_header_size = 20);
 HIDDEN(vector_align = 256);
-HIDDEN(word_align   = 4);
-
+HIDDEN(word_align = 4);
 
 ENTRY(_start)
 
 SECTIONS {
-	.stage2 (READONLY) : {
-		KEEP(*(.stage2))
-	} > BLFLASH
+	.rodata.app_header (READONLY) : ALIGN(word_align) {
+		KEEP(*(.rodata.app_header))
+	} > APPFLASH
 
 	.rodata._vectors (READONLY) : ALIGN(vector_align) {
 		KEEP(*(.rodata._vectors))
-	} > BLFLASH
-
+	} > APPFLASH
+	
 	.text (READONLY) : ALIGN(word_align) {
-		*(.text*)
-	} > BLFLASH
+	    *(.text*)
+	} > APPFLASH
 
 	.rodata (READONLY) : ALIGN(word_align) {
-		*(.rodata*)
-	} > BLFLASH
+		*(.rodata.app*)
+	} > APPFLASH
 
 	.data : ALIGN(word_align) {
-		*(.data*)
+		*(.data.app*)
 		. = ALIGN(word_align);
-	} > SRAM AT> BLFLASH
+	} > SRAM AT> APPFLASH
 
 	.bss (NOLOAD) : ALIGN(word_align) {
-		*(.bss*)
+		*(.bss.app*)
 		. = ALIGN(word_align);
 	} > SRAM
 
@@ -69,7 +65,7 @@ SECTIONS {
 		LONG(LOADADDR(.data))
 		LONG(ADDR(.data) + SIZEOF(.data))
 		__copy_end__ = .;
-	} > BLFLASH
+	} > APPFLASH
 
 	.zero : ALIGN(word_align) {
 		__zero_start__ = .;
@@ -80,12 +76,6 @@ SECTIONS {
 		LONG(ADDR(.stack1))
 		LONG(ADDR(.stack1) + SIZEOF(.stack1))
 		__zero_end__ = .;
-	} > BLFLASH
-
-	.app : ALIGN(word_align) {
-		app_header = .;
-		KEEP(*(.app))
-		. = ALIGN(word_align);
 	} > APPFLASH
 
 	.ARM.attributes 0 : { *(.ARM.attributes) }
@@ -106,10 +96,7 @@ SECTIONS {
 	.unmapped 0 : { *(*) }
 }
 
-
+ASSERT(SIZEOF(.rodata.app_header) == app_header_size, "SIZEOF(.rodata.app_header) != 20")
+ASSERT(LOADADDR(.rodata.app_header) == ORIGIN(APPFLASH), "LOADADDR(.rodata.app_header) != ORIGIN(APPFLASH)")
 ASSERT(SIZEOF(.unmapped) == 0, "SIZEOF(.unmapped) != 0")
-ASSERT(SIZEOF(.app) > 0, "SIZEOF(.app) == 0")
-ASSERT(SIZEOF(.stage2) == stage2_size, "SIZEOF(.stage2) != stage2_size")
-ASSERT(LOADADDR(.stage2) == stage2_lma, "LOADADDR(.stage2) != stage2_lma")
 ASSERT(ALIGNOF(.rodata._vectors) == vector_align, "ALIGNOF(.rodata._vectors) == vector_align")
-ASSERT(LOADADDR(.rodata._vectors) == vectors_lma, "LOADADDR(.rodata._vectors) == vectors_lma")

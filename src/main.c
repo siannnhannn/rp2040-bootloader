@@ -1,4 +1,8 @@
+#include <stdio.h>
+#include "app/app_header.h"
+
+_Noreturn void boot_app(const app_header_t *header);
+
 int main () {
-	while(1);
-	return 0;
+	boot_app(&app_header);
 }

@@ -43,6 +43,7 @@ env = Environment(
     tools=[
         "default",
         "Stage2Crc32",
+        "Incbin",
         "github.jacobkoziej.scons-tools.Binutils.ObjCopy",
     ],
     variables=vars,
@@ -93,6 +94,7 @@ if not env["verbose_output"]:
         OBJCOPYCOMSTR="objcopy $TARGET",
         RANLIBCOMSTR="ranlib $TARGET",
         STAGE2CRC32COMSTR="crc32 $TARGET",
+        INCBINCOMSTR="incbin $TARGET",
     )
 
 
